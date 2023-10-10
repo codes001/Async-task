@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asynchronous Javascript Assignment</title>
+    <style>
+       
+
+        button {
+            border: none;
+            padding: 1rem 1.5rem;
+            width:max-content;
+            background-color: #034eef;
+            color: white;
+            font-weight: bolder;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 50px;
+            
+        }
+
+        button:focus{
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    <button id="downloadBtn">Download Video</button>
+    <button id="playBtn">Play</button>
+ 
+    <script>
+        const downloadBtn = document.getElementById('downloadBtn');
+        const playBtn = document.getElementById('playBtn');
+        const URL = "https://www.shutterstock.com/video/clip-1085900012-endless-confetti-falling-above--loop-animation";
+
+        downloadBtn.addEventListener('click', () => { 
+            downloadCallback(URL, (error) => {
+                if (error) {
+                    alert = ('Something went wrong.... try again');
+                } else {
+                    alert('Download successful'); 
+                }
+            });
+        });
+
+        playBtn.addEventListener('click', () => {
+            if (URL) {
+                playVideo(URL);
+            } else {
+                alert('Please download video') ;
+            }
+        });
+
+        function downloadCallback(URL, callback) {
+            fetch(URL)
+                .then(response => response.blob())
+                .then(blob => {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = URL;
+                    a.download = "video.mp4";
+                    a.click();
+                    URL.revokeObjectURL(url);
+                    callback(null);
+                })
+                .catch(error => callback(error));
+        }
+
+        function playVideo(URL) {
+            const video = document.createElement('video');
+        video.src = URL;
+        video.controls = true;
+       
+        }
+    </script>
+</body>
+</html>
