@@ -1,78 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asynchronous Javascript Assignment</title>
     <style>
-       
-
         button {
             border: none;
             padding: 1rem 1.5rem;
-            width:max-content;
-            background-color: #034eef;
+            width: max-content;
+            background-color: #03efcf;
             color: white;
             font-weight: bolder;
             font-size: 1.5rem;
             cursor: pointer;
             border-radius: 50px;
-            
         }
 
-        button:focus{
+        button:focus {
             outline: none;
         }
     </style>
 </head>
+
 <body>
     <button id="downloadBtn">Download Video</button>
     <button id="playBtn">Play</button>
- 
+
     <script>
         const downloadBtn = document.getElementById('downloadBtn');
         const playBtn = document.getElementById('playBtn');
-        const URL = "https://www.shutterstock.com/video/clip-1085900012-endless-confetti-falling-above--loop-animation";
+        const body = document.querySelector('body');
+        const URL = "https://static.videezy.com/system/resources/previews/000/008/297/original/Young_African_American_Woman_Pensive_Headphones_1.mp4";
 
-        downloadBtn.addEventListener('click', () => { 
-            downloadCallback(URL, (error) => {
-                if (error) {
-                    alert = ('Something went wrong.... try again');
-                } else {
-                    alert('Download successful'); 
-                }
-            });
+        downloadBtn.addEventListener('click', async () => {
+            try {
+                const res = await fetch(URL);
+                const file = await res.blob();
+                const a = document.createElement('a');
+                a.href = URLcreateObjectURL(file);
+                a.download = URL; 
+                a.style.display = 'none';
+                body.appendChild(a);
+                a.click();
+                body.removeChild(a);
+            } catch (error) {
+                alert('Could not download video');
+                console.error(error);
+            }
         });
 
         playBtn.addEventListener('click', () => {
             if (URL) {
                 playVideo(URL);
             } else {
-                alert('Please download video') ;
+                alert('Please download the video first');
             }
         });
 
-        function downloadCallback(URL, callback) {
-            fetch(URL)
-                .then(response => response.blob())
-                .then(blob => {
-                    const url = URL.createObjectURL(blob);
-                    const a = document.createElement("a");
-                    a.href = URL;
-                    a.download = "video.mp4";
-                    a.click();
-                    URL.revokeObjectURL(url);
-                    callback(null);
-                })
-                .catch(error => callback(error));
-        }
-
-        function playVideo(URL) {
+        function playVideo(url) {
             const video = document.createElement('video');
-        video.src = URL;
-        video.controls = true;
-       
+            video.src = URL;
+            video.controls = true;
+            body.appendChild(video);
         }
     </script>
 </body>
+
 </html>
